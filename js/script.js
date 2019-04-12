@@ -38,7 +38,7 @@ window.addEventListener('DOMContentLoaded', function(){
 
     //Timer
 
-    let deadline = '2019-03-16';
+    let deadline = '2019-04-13';
 
     function TimeRemaining(endtime) {
         let t = Date.parse(endtime) - Date.parse(new Date()),
@@ -112,8 +112,83 @@ window.addEventListener('DOMContentLoaded', function(){
     //let age = document.getElementById('age');
 
     //function showUser(surname, name) {
-    //	alert("Пользователь " + surname + " " + name + ", его возраст " + this.value);
+    //	alert("Пользователь " + surname + " " + name + ",
+    // его возраст " + this.value);
     //}
 
    //showUser.apply(age,["Моргенштерн", "Алишер"]);
+
+
+   //form
+
+   let message = {
+       loading: "Загрузка...",
+       success: 'Спасибо! Скоро мы с вами свяжемся!',
+       failure: 'Что-то пошло не так...'
+   };
+
+   let form =  document.querySelector('.main-form'),
+       input = form.getElementsByTagName('input'),
+       statusMessage =  document.createElement('div');
+
+       statusMessage.classList.add('status');
+
+    form.addEventListener('submit', function(event){
+        event.preventDefault();
+        form.appendChild(statusMessage);
+        
+        let request = new XMLHttpRequest();
+        request.open('POST', 'server.php');
+        request.setRequestHeader('Content-Type',
+         'application/json, charset=utf-8');
+
+        let formData = new FormData(form);
+
+        let obj = {};
+        formData.forEach(function(value, key){
+            obj[key] = value;
+        });
+        let json= JSON.stringify(obj);
+        request.send(json);
+
+        request.addEventListener('readystatechange', function(){
+            if(request.readyState < 4){
+                statusMessage.innerHTML = message.loading;
+            }
+            else if(request.readyState === 4 && request.status == 200){
+                statusMessage.innerHTML = message.success;
+            }
+            else{
+                statusMessage.innerHTML = message.failure;
+            }
+        });
+        for(let i = 0;i < input.length; i++){
+            input[i].value = '';
+        }
+    });
+    let forme = document.querySelector('#form');
+    let inpute = forme.getElementsByTagName('input');
+
+    forme.addEventListener('submit',function(event){
+        event.preventDefault();
+
+        let requests = new XMLHttpRequest();
+        requests.open('POST', 'server.php');
+        requests.setRequestHeader('Content-Type',
+         'application/json, charset=utf-8');
+
+        let formDatas = new FormData(forme);
+
+        let obje = {};
+        formDatas.forEach(function(values, keys){
+            obje[keys] = values;
+        });
+        let jsons = JSON.stringify(obje);
+        requests.send(jsons);
+
+    });
+
+    for(let i = 0;i < inpute.length; i++){
+        inpute[i].value = '';
+    }
 });
